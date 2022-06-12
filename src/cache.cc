@@ -31,7 +31,7 @@ stashcache::Cache::Cache(int bytesize)
 
 stashcache::Cache::~Cache(void) { cache.reset(); }
 
-bool stashcache::Cache::set(std::string key, std::string value) {
+bool stashcache::Cache::set(const std::string & key, const std::string& value) {
   const size_t value_size(value.size());
   if (value_size <= slab_size) {
     auto handle = cache->allocate(pool_id, key, value_size);
@@ -59,7 +59,7 @@ bool stashcache::Cache::set(std::string key, std::string value) {
   }
 };
 
-std::optional<std::string> stashcache::Cache::get(std::string key) {
+std::optional<std::string> stashcache::Cache::get(const std::string& key) {
   auto handle = cache->find(key);
   if (handle) {
     std::stringstream ss;

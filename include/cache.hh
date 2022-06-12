@@ -23,8 +23,8 @@ public:
   Cache(void) = delete;
   Cache(int bytesize);
   ~Cache(void);
-  bool set(std::string key, std::string value);
-  std::optional<std::string> get(std::string key);
+  bool set(const std::string& key, const std::string& value);
+  std::optional<std::string> get(const std::string& key);
 };
 
 } // namespace stashcache
