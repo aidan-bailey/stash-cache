@@ -10,14 +10,14 @@ stashcache::Client::Client(const std::string name, const std::string clientpipe,
                name, clientpipe, serverpipe);
 }
 
-bool stashcache::Client::set(const std::string key, const std::string value){
+bool stashcache::Client::set(const std::string &key, const std::string &value){
     sender.send("SET");
     sender.send(key);
     sender.send(value);
     return true;
 }
 
-std::optional<const std::string> stashcache::Client::get(const std::string key){
+std::optional<const std::string> stashcache::Client::get(const std::string &key){
     sender.send("GET");
     sender.send(key);
     std::optional<const std::string> response = receiver.receive(true);

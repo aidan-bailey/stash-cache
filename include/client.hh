@@ -15,8 +15,8 @@ public:
   Client(void) = delete;
   Client(const std::string name, const std::string clientpipe,
          const std::string serverpipe);
-  bool set(const std::string key, const std::string value);
-  std::optional<const std::string> get(const std::string key);
+  bool set(const std::string &key, const std::string &value);
+  std::optional<const std::string> get(const std::string &key);
   void terminate(void);
 };
 } // namespace stashcache
