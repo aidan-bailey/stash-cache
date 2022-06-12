@@ -26,6 +26,7 @@ void stashcache::Service::serve(const std::string name,
                                 bool &running) {
   sleep(1);
   while (running) {
+    spdlog::info("Service '{}' waiting for message", name);
     const std::string cmd = receiver.receive(true).value();
     switch (REQUEST_STR_MAP.at(cmd)) {
     case SET: {
