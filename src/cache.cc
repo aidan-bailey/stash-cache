@@ -31,7 +31,7 @@ stashcache::Cache::Cache(int bytesize)
 
 stashcache::Cache::~Cache(void) { cache.reset(); }
 
-bool stashcache::Cache::set(const std::string & key, const std::string& value) {
+bool stashcache::Cache::set(const std::string &key, const std::string &value) {
   const size_t value_size(value.size());
   if (value_size <= slab_size) {
     auto handle = cache->allocate(pool_id, key, value_size);
@@ -39,7 +39,7 @@ bool stashcache::Cache::set(const std::string & key, const std::string& value) {
       return false;
     }
     std::cout << value_size << std::endl;
-    std::memcpy(handle->getMemory(),&value[0], value_size);
+    std::memcpy(handle->getMemory(), &value[0], value_size);
     cache->insertOrReplace(handle);
     return true;
   } else {
@@ -59,14 +59,15 @@ bool stashcache::Cache::set(const std::string & key, const std::string& value) {
   }
 };
 
-std::optional<std::string> stashcache::Cache::get(const std::string& key) {
+std::optional<std::string> stashcache::Cache::get(const std::string &key) {
   auto handle = cache->find(key);
   if (handle) {
     std::stringstream ss;
     if (handle->getSize() == 0) {
       auto chainedAllocs = cache->viewAsChainedAllocs(handle);
       for (auto &c : chainedAllocs.getChain()) {
-        ss << std::string(reinterpret_cast<const char *>(c.getMemory()), c.getSize());
+        ss << std::string(reinterpret_cast<const char *>(c.getMemory()),
+                          c.getSize());
       }
       return ss.str();
     } else {
