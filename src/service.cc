@@ -40,7 +40,7 @@ void stashcache::Service::serve(const std::string name,
       spdlog::info("Received GET command for '{}'", name);
       const std::string key = receiver.receive(true).value();
       std::optional<const std::string> result = cache->get(key);
-      sender.send(result.value_or(std::string('\0', 1)));
+      sender.send(result.value_or(std::string("\0", 1)));
       break;
     }
     case END: {
