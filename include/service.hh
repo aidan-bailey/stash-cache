@@ -31,6 +31,9 @@ public:
   Service(void) = delete;
   Service(const std::string name, const std::string serverpipe,
           const std::string clientpipe, std::shared_ptr<Cache> cache);
+  std::string get_client_pipe(void) const;
+  std::string get_server_pipe(void) const;
+  bool is_running(void) const;
   bool terminate(void);
 };
 

@@ -63,3 +63,15 @@ bool stashcache::Service::terminate(void) {
   thread.join();
   return true;
 }
+
+std::string stashcache::Service::get_client_pipe(void) const{
+  return receiver.get_pipe();
+}
+
+std::string stashcache::Service::get_server_pipe(void) const{
+  return sender.get_pipe();
+}
+
+bool stashcache::Service::is_running(void) const {
+  return running;
+}
