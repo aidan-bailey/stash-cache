@@ -57,6 +57,17 @@ install(FILES "${PROJECT_BINARY_DIR}/stashcacheconfig.hh"
   DESTINATION include
 )
 
+##########
+# SERVER #
+##########
+
+add_executable(server src/server.cc)
+target_include_directories(server PUBLIC
+                           "${PROJECT_BINARY_DIR}"
+                           include
+                           )
+target_link_libraries(server PUBLIC stashcache)
+
 ###########
 # TESTING #
 ###########
