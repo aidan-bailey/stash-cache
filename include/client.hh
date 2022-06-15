@@ -4,17 +4,22 @@
 #include <cppiper/receiver.hh>
 #include <cppiper/sender.hh>
 #include <optional>
+#include <string>
+#include <utility>
 namespace stashcache {
 class Client {
 private:
   cppiper::Sender sender;
   cppiper::Receiver receiver;
   std::string name;
+  static std::pair<std::string, std::string>get_pipes(const std::string name);
 
 public:
   Client(void) = delete;
   Client(const std::string name, const std::string clientpipe,
          const std::string serverpipe);
+  Client(const std::string name, const std::pair<std::string, std::string> client_server_pipes);
+  Client(const std::string name);
   bool set(const std::string &key, const std::string &value);
   std::optional<const std::string> get(const std::string &key);
   void terminate(void);
