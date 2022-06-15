@@ -38,7 +38,6 @@ bool stashcache::Cache::set(const std::string &key, const std::string &value) {
     if (!handle) {
       return false;
     }
-    std::cout << value_size << std::endl;
     std::memcpy(handle->getMemory(), &value[0], value_size);
     cache->insertOrReplace(handle);
     return true;
