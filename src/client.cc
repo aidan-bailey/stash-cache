@@ -20,6 +20,11 @@ stashcache::Client::Client(const std::string name, const std::string clientpipe,
 }
 
 std::pair<std::string, std::string> stashcache::Client::get_pipes(const std::string name){
+
+/*
+** Following code is a derivative of that found at https://www.geeksforgeeks.org/socket-programming-cc/
+ */
+
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -30,8 +35,6 @@ std::pair<std::string, std::string> stashcache::Client::get_pipes(const std::str
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
-    // Convert IPv4 and IPv6 addresses from text to binary
-    // form
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)
         <= 0) {
         printf(

@@ -17,6 +17,10 @@
 #include <thread>
 #define PORT 8080
 
+/*
+** Following code is a derivative of that found at https://www.geeksforgeeks.org/socket-programming-cc/
+ */
+
 static void cleaner(std::vector<stashcache::Service*> &services, cppiper::PipeManager &pm, std::mutex &lock) {
   while (1) {
     int i(0);
@@ -64,13 +68,11 @@ int main(int argc, char *argv[]) {
   int opt = 1;
   int addrlen = sizeof(address);
 
-  // Creating socket file descriptor
   if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
     perror("socket failed");
     exit(EXIT_FAILURE);
   }
 
-  // Forcefully attaching socket to the port 8080
   if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt,
                  sizeof(opt))) {
     perror("setsockopt");
@@ -85,7 +87,6 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  // Forcefully attaching socket to the port 8080
   while (1) {
     if (listen(server_fd, 3) < 0) {
       perror("listen");
@@ -108,8 +109,6 @@ int main(int argc, char *argv[]) {
     send(new_socket, ret_msg.c_str(), ret_msg.size(), 0);
   }
 
-  // closing the connected socket
   close(new_socket);
-  // closing the listening socket
   shutdown(server_fd, SHUT_RDWR);
 }
