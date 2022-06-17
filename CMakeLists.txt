@@ -84,3 +84,38 @@ target_include_directories(benchmark PUBLIC
                            include
                            )
 target_link_libraries(benchmark PUBLIC stashcache)
+
+########
+# SWIG #
+########
+
+set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
+
+find_package(SWIG REQUIRED)
+include(${SWIG_USE_FILE})
+
+find_package(PythonLibs)
+include_directories(${PYTHON_INCLUDE_PATH})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+set(CMAKE_SWIG_FLAGS "")
+#set(SWIG_INCLUDE_DIRECTORIES /home/aidanb/Repos/Personal/stash-cache/include)
+
+set_source_files_properties(python/client.i PROPERTIES CPLUSPLUS ON)
+set_source_files_properties(python/client.i PROPERTIES SWIG_FLAGS "-includeall")
+
+swig_add_library(stashcachepython
+                 LANGUAGE python
+                 SOURCES python/client.i
+                )
+
+set_property(TARGET stashcachepython PROPERTY SWIG_COMPILE_OPTIONS)
+
+#SWIG_INCLUDE_DIRECTORIES(stashcachepython PUBLIC
+#                           "${PROJECT_BINARY_DIR}"
+#                           include
+#                           "/home/aidanb/Builds/CacheLib/opt/cachelib/include"
+#                           )
+
+swig_link_libraries(stashcachepython PUBLIC stashcache cppiper glog::glog)
