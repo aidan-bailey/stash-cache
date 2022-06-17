@@ -49,12 +49,6 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  // if (DEV) {
-  //   spdlog::set_level(spdlog::level::debug);
-  //   spdlog::debug("Dev mode enabled");
-  // } else
-  //   spdlog::set_level(spdlog::level::err);
-
   std::shared_ptr cache =
       std::make_shared<stashcache::Cache>(atoi(argv[1]) * 1024 * 1024 * 1024);
   cppiper::PipeManager pm("pipe_manager");
