@@ -17,9 +17,6 @@
 #include <thread>
 #define PORT 8080
 
-/*
-** Following code is a derivative of that found at https://www.geeksforgeeks.org/socket-programming-cc/
- */
 
 static void cleaner(std::vector<stashcache::Service*> &services, cppiper::PipeManager &pm, std::mutex &lock) {
   while (1) {
@@ -56,6 +53,10 @@ int main(int argc, char *argv[]) {
   std::vector<stashcache::Service*> services;
   std::mutex lock;
   std::thread cleanup_thread(cleaner, std::ref(services), std::ref(pm), std::ref(lock));
+
+/*
+** Following code is a derivative of that found at https://www.geeksforgeeks.org/socket-programming-cc/
+ */
 
   int server_fd, new_socket, valread;
   struct sockaddr_in address;
