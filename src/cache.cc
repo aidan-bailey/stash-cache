@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
-#include <spdlog/spdlog.h>
+#include <glog/logging.h>
 #include <sstream>
 #include <string>
 
@@ -26,7 +26,7 @@ stashcache::Cache::Cache(int bytesize)
   cache = std::make_unique<LruCache>(config);
   pool_id =
       cache->addPool("default_pool", cache->getCacheMemoryStats().cacheSize);
-  spdlog::debug("Initialised cache");
+  DLOG(INFO) << "Initialised cache";
 };
 
 stashcache::Cache::~Cache(void) { cache.reset(); }
