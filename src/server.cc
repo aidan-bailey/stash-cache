@@ -25,8 +25,8 @@ static void cleaner(std::vector<stashcache::Service*> &services, cppiper::PipeMa
     while (i < services.size()){
       if (services[i]->is_running()){
         services[i]->terminate();
-        pm.remove_pipe(services[i]->get_client_pipe());
-        pm.remove_pipe(services[i]->get_server_pipe());
+        pm.remove_pipe(services[i]->get_client_pipe().filename());
+        pm.remove_pipe(services[i]->get_server_pipe().filename());
         delete services[i];
         services.erase(services.begin()+i);
       }
