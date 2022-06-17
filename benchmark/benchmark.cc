@@ -11,7 +11,8 @@
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
-    std::cout << "usage: benchmark <value_count> <value_size> <key_size>" << std::endl;
+    std::cout << "usage: benchmark <value_count> <value_size> <key_size>"
+              << std::endl;
     exit(1);
   }
   const int value_count(atoi(argv[1]));
@@ -31,20 +32,23 @@ int main(int argc, char *argv[]) {
   std::string spipe = pm.make_pipe();
   stashcache::Client client("Client", cpipe, spipe);
   stashcache::Service service("Server", spipe, cpipe, cache);
-  const std::string key(cppiper::random_hex(key_size));
-  const std::string value(cppiper::random_hex(value_size));
   const int testset_size(value_count);
-  std::chrono::high_resolution_clock::time_point start =
-      std::chrono::high_resolution_clock::now();
+  double net(0);
+  std::cout << "running..." << std::endl;
   for (int i = 0; i < testset_size; i++) {
+    const std::string key(cppiper::random_hex(key_size));
+    const std::string value(cppiper::random_hex(value_size));
+    std::chrono::high_resolution_clock::time_point start =
+        std::chrono::high_resolution_clock::now();
     client.set(key, value);
     auto res = client.get(key);
+    std::chrono::high_resolution_clock::time_point end =
+        std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::micro> delta = (end - start);
+    net += delta.count();
   }
-  std::chrono::high_resolution_clock::time_point end =
-      std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double, std::micro> delta = (end - start);
-  std::cout << "Avg of " << delta.count() / testset_size << "us/msg"
-            << std::endl;
+  std::cout << "finished..." << std::endl;
+  std::cout << "Result: " << net / testset_size << "us/msg" << std::endl;
   client.terminate();
   service.terminate();
   pm.clear();
