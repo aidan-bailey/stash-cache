@@ -68,13 +68,13 @@ target_include_directories(server PUBLIC
                            )
 target_link_libraries(server PUBLIC stashcache)
 
-###########
-# TESTING #
-###########
+#############
+# BENCHMARK #
+#############
 
-add_executable(test test/test.cc)
-target_include_directories(test PUBLIC
+add_executable(benchmark benchmark/benchmark.cc)
+target_include_directories(benchmark PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            include
                            )
-target_link_libraries(test PUBLIC stashcache)
+target_link_libraries(benchmark PUBLIC stashcache)

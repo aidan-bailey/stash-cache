@@ -7,18 +7,23 @@
 #include <cppiper/sender.hh>
 #include <iostream>
 #include <memory>
-#include <spdlog/spdlog.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  std::cout << "stashcache v" << STASHCACHE_VERSION_MAJOR << '.'
-            << STASHCACHE_VERSION_MINOR << std::endl;
-  if (DEV) {
-    spdlog::set_level(spdlog::level::debug);
-    spdlog::debug("Dev mode enabled");
-  } else
-    spdlog::set_level(spdlog::level::err);
-
+  if (argc < 3) {
+    std::cout << "usage: benchmark <value_count> <value_size> <key_size>" << std::endl;
+    exit(1);
+  }
+  const int value_count(atoi(argv[1]));
+  const int value_size(atoi(argv[2]));
+  const int key_size(atoi(argv[3]));
+  std::cout << "stash-cache v" << STASHCACHE_VERSION_MAJOR << '.'
+            << STASHCACHE_VERSION_MINOR << " benchmark" << std::endl
+            << "Value Count: " << value_count << std::endl
+            << "Value Size: " << value_size << "B" << std::endl
+            << "Key Size:  " << key_size << "B" << std::endl;
+  fLS::FLAGS_log_dir = "./";
+  google::InitGoogleLogging(argv[0]);
   std::shared_ptr cache =
       std::make_shared<stashcache::Cache>(1024 * 1024 * 1024);
   cppiper::PipeManager pm("tmp/pipemanager");
@@ -26,9 +31,9 @@ int main(int argc, char *argv[]) {
   std::string spipe = pm.make_pipe();
   stashcache::Client client("Client", cpipe, spipe);
   stashcache::Service service("Server", spipe, cpipe, cache);
-  std::string key = cppiper::random_hex(64);
-  std::string value = cppiper::random_hex(10000);
-  int testset_size = 1000000;
+  const std::string key(cppiper::random_hex(key_size));
+  const std::string value(cppiper::random_hex(value_size));
+  const int testset_size(value_count);
   std::chrono::high_resolution_clock::time_point start =
       std::chrono::high_resolution_clock::now();
   for (int i = 0; i < testset_size; i++) {
