@@ -2,7 +2,7 @@
 (WIP)
 
 ## Requirements
-- C++20
+- C++17
 - [spdlog](https://github.com/gabime/spdlog) for logging
 - [CacheLib](https://github.com/facebook/CacheLib) (good luck!)
 - [cppiper](https://github.com/aidanjbailey/cppiper)
