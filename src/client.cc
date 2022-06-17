@@ -7,6 +7,7 @@
 #include <string.h>
 #include <string>
 #include <sys/socket.h>
+#include <glog/logging.h>
 #include <unistd.h>
 #include <utility>
 #define PORT 8080
@@ -14,9 +15,10 @@
 stashcache::Client::Client(const std::string name, const std::string clientpipe,
                            const std::string serverpipe)
     : name(name), sender(name, clientpipe), receiver(name, serverpipe) {
-  spdlog::info("Constructed client instance '{0}' with client pipe '{1}' and "
-               "server pipe '{2}'",
-               name, clientpipe, serverpipe);
+
+  DLOG(INFO) << "Constructed client instance " << name
+      << " with client pipe " << clientpipe
+      << " and server pipe " << serverpipe;
 }
 
 std::pair<std::string, std::string> stashcache::Client::get_pipes(const std::string name){
