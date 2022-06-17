@@ -1,4 +1,5 @@
 #include "cache.hh"
+#include <stashcacheconfig.hh>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>

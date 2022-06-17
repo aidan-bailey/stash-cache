@@ -1,4 +1,5 @@
 #include "client.hh"
+#include "stashcacheconfig.hh"
 #include <cppiper/receiver.hh>
 #include <cppiper/sender.hh>
 #include <arpa/inet.h>

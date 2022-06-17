@@ -1,4 +1,5 @@
 #include "service.hh"
+#include "stashcacheconfig.hh"
 #include <cppiper/receiver.hh>
 #include <functional>
 #include <glog/logging.h>
