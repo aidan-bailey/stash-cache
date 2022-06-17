@@ -7,8 +7,8 @@
 #include <thread>
 
 stashcache::Service::Service(const std::string name,
-                             const std::string serverpipe,
-                             const std::string clientpipe,
+                             const std::filesystem::path serverpipe,
+                             const std::filesystem::path clientpipe,
                              std::shared_ptr<stashcache::Cache> cache)
     : name(name), sender(name, serverpipe), receiver(name, clientpipe),
       cache(cache), running(true),
@@ -64,11 +64,11 @@ bool stashcache::Service::terminate(void) {
   return true;
 }
 
-std::string stashcache::Service::get_client_pipe(void) const {
+std::filesystem::path stashcache::Service::get_client_pipe(void) const {
   return receiver.get_pipe();
 }
 
-std::string stashcache::Service::get_server_pipe(void) const {
+std::filesystem::path stashcache::Service::get_server_pipe(void) const {
   return sender.get_pipe();
 }
 
