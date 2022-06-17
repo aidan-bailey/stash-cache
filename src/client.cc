@@ -13,8 +13,8 @@
 #include <utility>
 #define PORT 8080
 
-stashcache::Client::Client(const std::string name, const std::string clientpipe,
-                           const std::string serverpipe)
+stashcache::Client::Client(const std::string name, const std::filesystem::path clientpipe,
+                           const std::filesystem::path serverpipe)
     : name(name), sender(name, clientpipe), receiver(name, serverpipe) {
 
   DLOG(INFO) << "Constructed client instance " << name
@@ -22,7 +22,7 @@ stashcache::Client::Client(const std::string name, const std::string clientpipe,
       << " and server pipe " << serverpipe;
 }
 
-std::pair<std::string, std::string> stashcache::Client::get_pipes(const std::string name){
+std::pair<std::filesystem::path, std::filesystem::path> stashcache::Client::get_pipes(const std::string name){
 
 /*
 ** Following code is a derivative of that found at https://www.geeksforgeeks.org/socket-programming-cc/
@@ -65,7 +65,7 @@ std::pair<std::string, std::string> stashcache::Client::get_pipes(const std::str
     return std::pair<std::string, std::string>(client_pipe, server_pipe);
 }
 
-stashcache::Client::Client(const std::string name, const std::pair<std::string, std::string> client_server_pipes): Client(name, client_server_pipes.first, client_server_pipes.second){};
+stashcache::Client::Client(const std::string name, const std::pair<std::filesystem::path, std::filesystem::path> client_server_pipes): Client(name, client_server_pipes.first, client_server_pipes.second){};
 
 stashcache::Client::Client(const std::string name): Client(name, get_pipes(name)){};
 
