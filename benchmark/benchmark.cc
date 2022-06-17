@@ -21,8 +21,8 @@ int main(int argc, char *argv[]) {
   std::cout << "stash-cache v" << STASHCACHE_VERSION_MAJOR << '.'
             << STASHCACHE_VERSION_MINOR << " benchmark" << std::endl
             << "Value Count: " << value_count << std::endl
-            << "Value Size: " << value_size << "B" << std::endl
-            << "Key Size:  " << key_size << "B" << std::endl;
+            << "Value Size:  " << value_size << "B" << std::endl
+            << "Key Size:    " << key_size << "B" << std::endl;
   fLS::FLAGS_log_dir = "./";
   google::InitGoogleLogging(argv[0]);
   std::shared_ptr cache =
