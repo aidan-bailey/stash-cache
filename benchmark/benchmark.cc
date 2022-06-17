@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
   std::shared_ptr cache =
       std::make_shared<stashcache::Cache>(1024 * 1024 * 1024);
   cppiper::PipeManager pm("tmp/pipemanager");
-  std::string cpipe = pm.make_pipe();
-  std::string spipe = pm.make_pipe();
+  std::filesystem::path cpipe = pm.make_pipe();
+  std::filesystem::path spipe = pm.make_pipe();
   stashcache::Client client("Client", cpipe, spipe);
   stashcache::Service service("Server", spipe, cpipe, cache);
   const int testset_size(value_count);
