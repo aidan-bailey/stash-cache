@@ -25,7 +25,7 @@ endif()
 configure_file(src/stashcacheconfig.hh.in stashcacheconfig.hh)
 
 # Find dependencies
-find_package(spdlog REQUIRED) # logging
+find_package(glog REQUIRED) # logging
 find_package(cppiper REQUIRED) # logging
 find_package(cachelib REQUIRED)
 
@@ -35,7 +35,7 @@ find_package(cachelib REQUIRED)
 
 add_library(
   stashcache
-  STATIC
+  SHARED
   src/cache.cc
   src/service.cc
   src/client.cc
@@ -46,7 +46,7 @@ target_include_directories(stashcache PUBLIC
                            include
                            "/home/aidanb/Builds/CacheLib/opt/cachelib/include"
                            )
-target_link_libraries(stashcache PRIVATE cppiper spdlog::spdlog cachelib)
+target_link_libraries(stashcache PUBLIC cppiper::cppiper glog::glog cachelib)
 
 ################
 # INSTALLATION #
