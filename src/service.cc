@@ -24,6 +24,7 @@ void stashcache::Service::serve(const std::string name,
                                 cppiper::Sender &sender,
                                 std::shared_ptr<stashcache::Cache> cache,
                                 bool &running) {
+  sleep(1);
   while (running) {
     DLOG(INFO) << "Service " << name << " waiting for message...";
     const std::string cmd = receiver.receive(true).value();
