@@ -1,8 +1,8 @@
 #include "service.hh"
 #include <cppiper/receiver.hh>
 #include <functional>
+#include <glog/logging.h>
 #include <optional>
-#include <spdlog/spdlog.h>
 #include <string>
 #include <thread>
 
@@ -14,9 +14,8 @@ stashcache::Service::Service(const std::string name,
       cache(cache), running(true),
       thread(serve, name, std::ref(receiver), std::ref(sender), cache,
              std::ref(running)) {
-  spdlog::info("Constructed service instance '{0}' with server pipe '{1}' and "
-               "client pipe '{2}'",
-               name, serverpipe, clientpipe);
+  DLOG(INFO) << "Constructed service instance " << name << " with server pipe "
+             << serverpipe << " and client pipe " << clientpipe;
 }
 
 void stashcache::Service::serve(const std::string name,
@@ -26,52 +25,51 @@ void stashcache::Service::serve(const std::string name,
                                 bool &running) {
   sleep(1);
   while (running) {
-    spdlog::info("Service '{}' waiting for message", name);
+    DLOG(INFO) << "Service " << name << " waiting for message...";
     const std::string cmd = receiver.receive(true).value();
     switch (REQUEST_STR_MAP.at(cmd)) {
     case SET: {
-      spdlog::info("Received SET command for '{}'", name);
+      DLOG(INFO) << "Received SET message for " << name;
       const std::string key = receiver.receive(true).value();
       const std::string value = receiver.receive(true).value();
       cache->set(key, value);
       break;
     }
     case GET: {
-      spdlog::info("Received GET command for '{}'", name);
+      DLOG(INFO) << "Received GET message for " << name;
       const std::string key = receiver.receive(true).value();
       std::optional<const std::string> result = cache->get(key);
       sender.send(result.value_or(std::string("\0", 1)));
       break;
     }
     case END: {
-      spdlog::info("Received END command for '{}'", name);
+      DLOG(INFO) << "Received END message for " << name;
       running = false;
       break;
     }
     default:
+      DLOG(INFO) << "Received unexpected message: " << name;
       break;
     }
   };
-  spdlog::info("Terminating service sender for '{}'", name);
+  DLOG(INFO) << "Terminating service sender for " << name;
   sender.terminate();
-  spdlog::info("Awaiting end of service receiver for '{}'", name);
+  DLOG(INFO) << "Awaiting end of service receiver for " << name;
   receiver.wait();
 }
 
 bool stashcache::Service::terminate(void) {
-  spdlog::debug("Terminating service instance '{0}'...", name);
+  DLOG(INFO) << "Terminating service instance " << name;
   thread.join();
   return true;
 }
 
-std::string stashcache::Service::get_client_pipe(void) const{
+std::string stashcache::Service::get_client_pipe(void) const {
   return receiver.get_pipe();
 }
 
-std::string stashcache::Service::get_server_pipe(void) const{
+std::string stashcache::Service::get_server_pipe(void) const {
   return sender.get_pipe();
 }
 
-bool stashcache::Service::is_running(void) const {
-  return running;
-}
+bool stashcache::Service::is_running(void) const { return running; }
