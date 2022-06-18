@@ -23,7 +23,7 @@ static void cleaner(std::vector<stashcache::Service*> &services, cppiper::PipeMa
     int i(0);
     lock.lock();
     while (i < services.size()){
-      if (services[i]->is_running()){
+      if (not services[i]->is_running()){
         services[i]->terminate();
         pm.remove_pipe(services[i]->get_client_pipe().filename());
         pm.remove_pipe(services[i]->get_server_pipe().filename());
@@ -45,6 +45,9 @@ int main(int argc, char *argv[]) {
     std::cout << "First argument must be size in GB." << std::endl;
     exit(1);
   }
+
+  fLS::FLAGS_log_dir = "./";
+  google::InitGoogleLogging(argv[0]);
 
   std::shared_ptr cache =
       std::make_shared<stashcache::Cache>(atoi(argv[1]) * 1024 * 1024 * 1024);
@@ -94,16 +97,16 @@ int main(int argc, char *argv[]) {
     }
     char name_buffer[1024];
     valread = read(new_socket, name_buffer, 1024);
-    std::string client_pipe = pm.make_pipe();
-    std::string server_pipe = pm.make_pipe();
+    std::string client_pipe = pm.make_pipe().string();
+    std::string server_pipe = pm.make_pipe().string();
     std::string ret_msg = client_pipe + ' ' + server_pipe + '\0';
+    send(new_socket, ret_msg.c_str(), ret_msg.size(), 0);
     lock.lock();
     services.emplace_back(new stashcache::Service(std::string(name_buffer, valread),
                                            server_pipe, client_pipe, cache));
     lock.unlock();
-    send(new_socket, ret_msg.c_str(), ret_msg.size(), 0);
+    close(new_socket);
   }
 
-  close(new_socket);
   shutdown(server_fd, SHUT_RDWR);
 }

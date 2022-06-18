@@ -3,6 +3,7 @@
 #include <cppiper/receiver.hh>
 #include <cppiper/sender.hh>
 #include <arpa/inet.h>
+#include <filesystem>
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
@@ -57,12 +58,10 @@ std::pair<std::filesystem::path, std::filesystem::path> stashcache::Client::get_
     valread = read(sock, buffer, 1024);
     std::string pipes = std::string(buffer);
     const int pos = pipes.find(" ");
-    std::string client_pipe = pipes.substr(0, pos);
-    std::string server_pipe = pipes.c_str() + pos + 1;
-    std::cout << client_pipe << std::endl;
-    std::cout << server_pipe << std::endl;
+    std::filesystem::path client_pipe = pipes.substr(0, pos);
+    std::filesystem::path server_pipe = pipes.c_str() + pos + 1;
     close(client_fd);
-    return std::pair<std::string, std::string>(client_pipe, server_pipe);
+    return std::pair<std::filesystem::path, std::filesystem::path>(client_pipe, server_pipe);
 }
 
 stashcache::Client::Client(const std::string name, const std::pair<std::filesystem::path, std::filesystem::path> client_server_pipes): Client(name, client_server_pipes.first, client_server_pipes.second){};
