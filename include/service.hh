@@ -29,6 +29,8 @@ public:
   Service(void) = delete;
   Service(const std::string name, const std::filesystem::path serverpipe,
           const std::filesystem::path clientpipe, std::shared_ptr<Cache> cache);
+
+  std::string get_client_name(void) const;
   std::filesystem::path get_client_pipe(void) const;
   std::filesystem::path get_server_pipe(void) const;
   bool is_running(void) const;
