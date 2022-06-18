@@ -20,7 +20,9 @@ public:
          const std::filesystem::path serverpipe);
   Client(const std::string name, const std::pair<std::filesystem::path, std::filesystem::path> client_server_pipes);
   Client(const std::string name);
+  bool set(const char * key, const size_t key_size, const char * value, const size_t value_size);
   bool set(const std::string &key, const std::string &value);
+  std::optional<const std::string> get(const char * key, const size_t key_size);
   std::optional<const std::string> get(const std::string &key);
   void terminate(void);
 };

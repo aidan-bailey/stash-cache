@@ -17,7 +17,7 @@
 stashcache::Client::Client(const std::string name, const std::filesystem::path clientpipe,
                            const std::filesystem::path serverpipe)
     : name(name), sender(name, clientpipe), receiver(name, serverpipe) {
-
+        
   DLOG(INFO) << "Constructed client instance " << name
       << " with client pipe " << clientpipe
       << " and server pipe " << serverpipe;
@@ -75,12 +75,20 @@ bool stashcache::Client::set(const std::string &key, const std::string &value){
     return true;
 }
 
+bool stashcache::Client::set(const char * key, const size_t key_size, const char * value, const size_t value_size){
+    return set(std::string(key, key_size), std::string(value, value_size));
+};
+
 std::optional<const std::string> stashcache::Client::get(const std::string &key){
     sender.send("GET");
     sender.send(key);
     std::optional<const std::string> response = receiver.receive(true);
     return response;
 }
+
+std::optional<const std::string> stashcache::Client::get(const char * key, const size_t key_size){
+    return get(std::string(key, key_size));
+};
 
 void stashcache::Client::terminate(void){
     sender.send("END");
