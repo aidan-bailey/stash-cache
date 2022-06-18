@@ -27,6 +27,7 @@ static void cleaner(std::vector<stashcache::Service*> &services, cppiper::PipeMa
         services[i]->terminate();
         pm.remove_pipe(services[i]->get_client_pipe().filename());
         pm.remove_pipe(services[i]->get_server_pipe().filename());
+        std::cout << "Client " << services[i]->get_client_name() << " deregistered" << std::endl;
         delete services[i];
         services.erase(services.begin()+i);
       }
@@ -48,6 +49,9 @@ int main(int argc, char *argv[]) {
 
   fLS::FLAGS_log_dir = "./";
   google::InitGoogleLogging(argv[0]);
+
+  std::cout << "stash-cache server v" << STASHCACHE_VERSION_MAJOR << '.'
+            << STASHCACHE_VERSION_MINOR << std::endl;
 
   std::shared_ptr cache =
       std::make_shared<stashcache::Cache>(atoi(argv[1]) * 1024 * 1024 * 1024);
@@ -86,6 +90,7 @@ int main(int argc, char *argv[]) {
   }
 
   while (1) {
+    std::cout << "Listening for new client..." << std::endl;
     if (listen(server_fd, 3) < 0) {
       perror("listen");
       exit(EXIT_FAILURE);
@@ -97,15 +102,17 @@ int main(int argc, char *argv[]) {
     }
     char name_buffer[1024];
     valread = read(new_socket, name_buffer, 1024);
+    std::string client_name = std::string(name_buffer, valread);
     std::string client_pipe = pm.make_pipe().string();
     std::string server_pipe = pm.make_pipe().string();
     std::string ret_msg = client_pipe + ' ' + server_pipe + '\0';
     send(new_socket, ret_msg.c_str(), ret_msg.size(), 0);
     lock.lock();
-    services.emplace_back(new stashcache::Service(std::string(name_buffer, valread),
+    services.emplace_back(new stashcache::Service(client_name,
                                            server_pipe, client_pipe, cache));
     lock.unlock();
     close(new_socket);
+    std::cout << "Client " << client_name << " registered" << std::endl;
   }
 
   shutdown(server_fd, SHUT_RDWR);
