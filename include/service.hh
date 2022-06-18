@@ -20,12 +20,10 @@ private:
   std::thread thread;
   bool running;
   std::shared_ptr<Cache> cache;
-  cppiper::Sender sender;
   cppiper::Receiver receiver;
+  cppiper::Sender sender;
   const std::string name;
-  static void serve(const std::string name, cppiper::Receiver &receiver,
-                    cppiper::Sender &sender, std::shared_ptr<Cache> cache,
-                    bool &running);
+  void serve();
 
 public:
   Service(void) = delete;

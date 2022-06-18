@@ -11,19 +11,14 @@ stashcache::Service::Service(const std::string name,
                              const std::filesystem::path serverpipe,
                              const std::filesystem::path clientpipe,
                              std::shared_ptr<stashcache::Cache> cache)
-    : name(name), sender(name, serverpipe), receiver(name, clientpipe),
-      cache(cache), running(true),
-      thread(serve, name, std::ref(receiver), std::ref(sender), cache,
-             std::ref(running)) {
+    : name(name), receiver(name, clientpipe), sender(name, serverpipe),
+      cache(cache), running(true) {
+  thread = std::thread(&Service::serve, this);
   DLOG(INFO) << "Constructed service instance " << name << " with server pipe "
              << serverpipe << " and client pipe " << clientpipe;
 }
 
-void stashcache::Service::serve(const std::string name,
-                                cppiper::Receiver &receiver,
-                                cppiper::Sender &sender,
-                                std::shared_ptr<stashcache::Cache> cache,
-                                bool &running) {
+void stashcache::Service::serve() {
   sleep(1);
   while (running) {
     DLOG(INFO) << "Service " << name << " waiting for message...";
